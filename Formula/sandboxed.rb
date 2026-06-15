@@ -1,11 +1,9 @@
 class Sandboxed < Formula
-  include Language::Python::Virtualenv
-
   desc "Run command-line tools inside disposable project containers"
   homepage "https://github.com/Kirill-Znamenskiy/sandboxed"
-  url "https://codeload.github.com/Kirill-Znamenskiy/sandboxed/tar.gz/refs/tags/v0.0.2"
-  version "0.0.2"
-  sha256 "fbcb7c76110050cde5e222cb6602ae38fa214cdb32bf09fb630e9444a21abcf2"
+  url "https://github.com/Kirill-Znamenskiy/sandboxed/archive/refs/tags/v0.0.3.tar.gz"
+  version "0.0.3"
+  sha256 "47da832234ea810b2e2b528594ea8aaaad6084a68ec936966c3a1037ab42c5ab"
   license "MIT"
 
   depends_on "python"
@@ -18,14 +16,17 @@ class Sandboxed < Formula
   def install
     libexec.install "src", "targets"
 
-    venv = virtualenv_create(libexec/"venv", "python3")
-    venv.pip_install resource("pyyaml")
+    # The launcher only needs PyYAML's pure-Python safe_load/safe_dump path.
+    resource("pyyaml").stage do
+      (libexec/"vendor").install "lib/yaml", "lib/_yaml"
+    end
 
     ["sandboxed", "sbxd"].each do |command_name|
       (bin/command_name).write <<~SH
         #!/bin/bash
         export SANDBOXED_HOME="#{libexec}"
-        export SANDBOXED_PYTHON="#{libexec}/venv/bin/python"
+        export SANDBOXED_PYTHON="#{Formula["python"].opt_bin}/python3"
+        export PYTHONPATH="#{libexec}/vendor${PYTHONPATH:+:$PYTHONPATH}"
         exec "#{libexec}/src/sandboxed.sh" "$@"
       SH
       chmod 0755, bin/command_name
