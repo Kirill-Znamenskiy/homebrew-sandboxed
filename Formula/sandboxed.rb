@@ -1,10 +1,12 @@
 class Sandboxed < Formula
   desc "Run command-line tools inside disposable project containers"
   homepage "https://github.com/Kirill-Znamenskiy/sandboxed"
-  url "https://github.com/Kirill-Znamenskiy/sandboxed/archive/refs/tags/v0.0.4.tar.gz"
-  version "0.0.4"
-  sha256 "72b120346ee3ec45f2d6a4e9f123636836cc8256c95eee072fc917d5c3ac6625"
+  url "https://github.com/Kirill-Znamenskiy/sandboxed/archive/refs/tags/v0.0.5.tar.gz"
+  version "0.0.5"
+  sha256 "c124bbbcae45a2cac5f6b88057d17d123f23d34e803c603f829895d5877b26a8"
   license "MIT"
+
+  head "https://github.com/Kirill-Znamenskiy/sandboxed.git", branch: "dev"
 
   depends_on "python"
 
